@@ -29,11 +29,11 @@ idCreator: number = Math.floor(Math.random()*100)
     if (!product){
       throw new NotFoundException(`not found at ${product}`)
     }
-  
+  return product
   }
 
   delete(id:number){
-    const indexFound = this.products.findIndex((id) => id.id)
+    const indexFound = this.products.findIndex((ind) => ind.id === id)
     if (indexFound == -1){
       throw new NotFoundException('Index not found')
     }
@@ -41,8 +41,15 @@ idCreator: number = Math.floor(Math.random()*100)
     return this.products
   }
 
-  update(id:number, updateDate:{name?:string,price?:number,description?:string}){
-
+  update(id:number, updateData:{name?:string,price?:number,description?:string}){
+    const indexFound = this.products.findIndex((ind) => ind.id === id)
+    if (indexFound == -1){
+      throw new NotFoundException('Index not found')
+    }
+    this.products[indexFound]={
+      ...this.products[indexFound],...updateData
+    }
+    return this.products[indexFound]
 
   }
 
@@ -51,12 +58,8 @@ idCreator: number = Math.floor(Math.random()*100)
       id: this.idCreator++,
       ...created
     }
-
      this.products.push(newProduct)
-    
   }
-
-
 }
 
 
