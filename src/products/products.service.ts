@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 export interface Product{
   id:number,
@@ -24,7 +25,10 @@ idCreator: number = Math.floor(Math.random()*100)
   }
 
   getById(id:number){
-    return this.products.find((product) => product.id === id)
+    const product = this.products.find((product) => product.id === id)
+    if (!product){
+      throw new NotFoundException(`not found at ${product}`)
+    }
   
   }
 
@@ -33,24 +37,23 @@ idCreator: number = Math.floor(Math.random()*100)
     if (indexFound == -1){
       throw new NotFoundException('Index not found')
     }
-    this.products.splice(1,indexFound)
+    this.products.splice(indexFound,1)
+    return this.products
   }
 
   update(id:number, updateDate:{name?:string,price?:number,description?:string}){
-    
+
 
   }
 
   create(created: {name:string;price:number;description:string}){
     const newProduct = {
       id: this.idCreator++,
-      name: created.name,
-      price: created.price,
-      description: created.description
+      ...created
     }
 
-    return this.products.push(newProduct)
-
+     this.products.push(newProduct)
+    
   }
 
 
@@ -76,4 +79,4 @@ idCreator: number = Math.floor(Math.random()*100)
 //   remove(id: number) {
 //     return `This action removes a #${id} product`;
 //   }
-}
+
