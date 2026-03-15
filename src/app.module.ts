@@ -5,6 +5,7 @@ import { ProductsModule } from './products/products.module';
 import { AuthMiddleware } from './common/middleware/auth-middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ProductsModule,TypeOrmModule.forRoot({
@@ -16,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
       database: 'test',
       entities: [],
       synchronize: true,
-    }),ConfigModule.forRoot({ isGlobal: true })],
+    }),ConfigModule.forRoot({ isGlobal: true }), AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

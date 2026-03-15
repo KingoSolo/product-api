@@ -15,6 +15,6 @@ export class User{
     @Column({select:false})
     password : string
 
-    @OneToMany(()=>Product,(product) => product)
+    @OneToMany(()=>Product,(product) => product.owner)
     products : Product[]
 }
