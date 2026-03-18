@@ -1,6 +1,6 @@
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsString, IsStrongPassword, Matches } from "class-validator"
+import { IsEmail, isNotEmpty, IsNotEmpty, IsPhoneNumber, IsString, IsStrongPassword, Matches } from "class-validator"
 
-export class SignUpDto {
+export class SignupDto {
     @IsString()
     @IsNotEmpty()
     firstName:string;
@@ -15,12 +15,14 @@ export class SignUpDto {
     email: string;
 
     @IsString()
-    @IsPhoneNumber()
+    @IsNotEmpty()
     @Matches(/^\+?[1-9]\d{1,14}$/, {
     message: 'Phone number must be valid E.164 format',
   })
     phoneNumber : string
     
     @IsStrongPassword()
+    @IsNotEmpty()
+    @IsString()
     password:string
 }

@@ -12,6 +12,9 @@ export class User{
     @Column()
     secondName: string
 
+    @Column()
+    email : string
+
     @Column({select:false})
     password : string
 
