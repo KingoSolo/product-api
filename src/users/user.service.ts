@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./entities/user.entity";
+import { NotFoundException } from "@nestjs/common";
 
 @Injectable()
 export class UserService{
@@ -35,6 +36,6 @@ export class UserService{
     }
 
     await this.usersRepository.remove(user);
-    return user;
+    throw new NotFoundException('User not found');
     }
 }

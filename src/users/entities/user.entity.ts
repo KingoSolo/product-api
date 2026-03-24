@@ -1,21 +1,31 @@
-import { Product } from "src/products/entities/product.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from "../../products/entities/product.entity"
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn,CreateDateColumn,UpdateDateColumn } from "typeorm";
+
 
 @Entity()
 export class User{
     @PrimaryGeneratedColumn()
     id:number
 
+    @CreateDateColumn()
+    createdAt: Date;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
     @Column()
     firstName: string
 
     @Column()
-    secondName: string
+    lastName: string
 
-    @Column()
+    @Column({ unique: true })
     email : string
 
-    @Column({select:false})
+    @Column()
+    phoneNumber: string
+
+    @Column()
     password : string
 
     @OneToMany(()=>Product,(product) => product.owner)

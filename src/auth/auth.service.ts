@@ -11,9 +11,9 @@ export class AuthService {
         private readonly jwtService:JwtService
     ){}
 
-    async Signup(dto:SignupDto){
+    async signup(dto:SignupDto){
         const existingUser  = await this.usersService.findByEmail(dto.email)
-        if (!existingUser){
+        if (existingUser){
             throw new ConflictException("Email already exists") 
         }
 
@@ -30,11 +30,12 @@ export class AuthService {
     };
 
     const accessToken = await this.jwtService.signAsync(payload);
-
+    const { password, ...safeUser } = user;
+    
     return {
       message: 'User created successfully',
-      access_token: accessToken,
-      user,
+      access_token:  accessToken,
+      user: safeUser,
     };
     }
 }

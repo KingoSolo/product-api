@@ -12,7 +12,7 @@ import { SignOptions } from 'jsonwebtoken';
     imports:[ConfigModule],
     inject: [ConfigService],
        useFactory: (configService: ConfigService) => {
-        const expiresIn = configService.getOrThrow<string>('JWT_EXPIRATION_TIME');
+        const expiresIn = configService.getOrThrow<string>('JWT_EXPIRES_IN');
 
         return {
           secret: configService.getOrThrow<string>('JWT_SECRET'),
