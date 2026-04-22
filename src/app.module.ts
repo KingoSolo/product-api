@@ -19,24 +19,15 @@ import { AuthMiddleware } from './common/middleware/auth-middleware';
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host: configService.getOrThrow<string>('DB_HOST'),
-        port: parseInt(
-          configService.getOrThrow<string>('DB_PORT'),
-          10,
-        ),
-        username: configService.getOrThrow<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD') ?? '',
-        database: configService.getOrThrow<string>('DB_NAME'),
+        url: configService.getOrThrow<string>('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: false,
-        ssl: configService.get('NODE_ENV') === 'production'
-          ?{rejectUnauthorized:false}
-          :false
-      }),
+        synchronize: configService.get('NODE_ENV') !== 'production',
+        ssl: { rejectUnauthorized: false },
     }),
+  }),
     ProductsModule,
     AuthModule,
   ],
