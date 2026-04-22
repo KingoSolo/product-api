@@ -1,17 +1,28 @@
+import { Category } from "src/category/entities/category.entity";
 import { User } from "src/users/entities/user.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Product {
     @PrimaryGeneratedColumn()
-    id:number
+    id!:number
     @Column()
-    createdAt:Date
+    name!:string
+    @CreateDateColumn()
+    createdAt!:Date
+    @UpdateDateColumn()
+    updatedAt!:Date
     @Column()
-    updatedDateColumn:Date
+    price!:number
 
     @ManyToOne(() => User,(user)=>user.products)
-    owner:User
+    owner!:User
     @Column()
-    ownerId: string
+    ownerId!: string
+
+    @ManyToOne(()=> Category,(category)=>category.products)
+    category!:Category
+
+    @Column({nullable:true})
+    categoryId!:number
 }

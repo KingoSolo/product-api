@@ -1,64 +1,62 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { CreateProductDto } from './dto/create-product.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from './entities/product.entity';
+import { UpdateProductDto } from './dto/update-product.dto';
+import { CategoryService } from '../category/category.service';
 
-export interface Product{
-  id:number,
-  name:string,
-  price : number,
-  description: string
-}
+
 
 
 
 @Injectable()
 export class ProductsService {
-
-private products: Product[] = [
-  { id:1,name:"car",price:300,description:"it is very fast"},
-  { id:2,name:"shirts",price:500,description:"designer luxury brand"}
-]
-
-idCreator: number = Math.floor(Math.random()*100)
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    private readonly categoryService: CategoryService
+  ) {}
 
   getAll(){
-    return this.products;
+    return this.productRepository.find();
   }
 
-  getById(id:number){
-    const product = this.products.find((product) => product.id === id)
+  async getById(id:number){
+    const product = await this.productRepository.findOne({ where: { id } })
     if (!product){
-      throw new NotFoundException(`not found at ${product}`)
+      throw new NotFoundException(`not found at ${id}`)
     }
-  return product
+    return product
   }
 
-  delete(id:number){
-    const indexFound = this.products.findIndex((ind) => ind.id === id)
-    if (indexFound == -1){
+  async delete(id:number){
+    const indexFound = await this.getById(id)
+    if (!indexFound){
       throw new NotFoundException('Index not found')
     }
-    this.products.splice(indexFound,1)
-    return this.products
+
+    await this.productRepository.delete(id)
+    return indexFound
   }
 
-  update(id:number, updateData:{name?:string,price?:number,description?:string}){
-    const indexFound = this.products.findIndex((ind) => ind.id === id)
-    if (indexFound == -1){
+  async update(id:number, dto:UpdateProductDto){
+    const product = await this.getById(id)
+    if (!product){
       throw new NotFoundException('Index not found')
     }
-    this.products[indexFound]={
-      ...this.products[indexFound],...updateData
-    }
-    return this.products[indexFound]
+    await this.productRepository.update(id,dto)
+    return this.productRepository.findOne({ where: { id } })
 
   }
 
-  create(created: {name:string;price:number;description:string}){
-    const newProduct = {
-      id: this.idCreator++,
-      ...created
-    }
-     this.products.push(newProduct)
+  async create(dto:CreateProductDto){
+    const category = await this.categoryService.findOne(dto.categoryId)
+    const newProduct = this.productRepository.create({
+      ...dto,
+      category
+    })
+    return this.productRepository.save(newProduct)
   }
 }
 
