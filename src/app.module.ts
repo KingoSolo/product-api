@@ -31,7 +31,10 @@ import { AuthMiddleware } from './common/middleware/auth-middleware';
         password: configService.get<string>('DB_PASSWORD') ?? '',
         database: configService.getOrThrow<string>('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: true,
+        synchronize: false,
+        ssl: configService.get('NODE_ENV') === 'production'
+          ?{rejectUnauthorized:false}
+          :false
       }),
     }),
     ProductsModule,
